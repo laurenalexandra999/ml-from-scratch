@@ -82,3 +82,23 @@ correct:
 0| 3 1
 1| 2 4
 """
+
+""" 
+mean absolute error
+
+the absolute average of the prediction error values.
+"""
+
+def MAE_metric(actual, predicted):
+    total_error = 0.0
+    for i in range(len(actual)): 
+        total_error += abs(predicted[i] - actual[i])
+    # divide total prediction errors by the number of actual values
+    return total_error / float(len(actual))
+
+# example
+actual = [0.1, 0.2, 0.3, 0.4, 0.5]
+predicted = [0.11, 0.19, 0.29, 0.41, 0.5]
+MAE = MAE_metric(actual, predicted)
+print(MAE)
+#0.007999999999999993
