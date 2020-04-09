@@ -87,6 +87,7 @@ correct:
 mean absolute error
 
 the absolute average of the prediction error values.
+use in regression problems (real value predicted).
 """
 
 def MAE_metric(actual, predicted):
@@ -101,4 +102,29 @@ actual = [0.1, 0.2, 0.3, 0.4, 0.5]
 predicted = [0.11, 0.19, 0.29, 0.41, 0.5]
 MAE = MAE_metric(actual, predicted)
 print(MAE)
-#0.007999999999999993
+# 0.007999999999999993
+
+"""
+root mean squared error - RMSE/MSE
+
+RMSE is the square root of the mean of the squared differences between actual and predicted values.
+use in regression problems (real value predicted).
+"""
+from math import sqrt 
+
+def RMSE_metric(actual, predicted):
+    total_error = 0.0
+    for i in range(len(actual)):
+        prediction_error = predicted[i] - actual[i]
+        # add squared differences between predicted and actual values
+        total_error += (prediction_error ** 2)
+    # calculate mean
+    mean = total_error / float(len(actual))
+    return sqrt(mean)
+
+# example
+actual = [0.1, 0.2, 0.3, 0.4, 0.5]
+predicted = [0.11, 0.19, 0.29, 0.41, 0.5]
+RMSE = RMSE_metric(actual, predicted)
+print(RMSE)
+# 0.00894427190999915
