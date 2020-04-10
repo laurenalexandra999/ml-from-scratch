@@ -11,6 +11,8 @@ needs:
 
 """ 
 train-test test harness 
+
+Algorithm trained on training data and makes predictions on test data.
 """
 from random import seed
 from random import randrange
@@ -83,3 +85,58 @@ split = 0.6
 accuracy = evaluate_algorithm(dataset, zero_rule_classification, split)
 print('Accuracy: %.3f%%' % (accuracy)) 
 # Accuracy: 67.427%
+
+""" 
+cross-validation test harness 
+
+- need to evaluate on k models on different subsets of the data
+- gold standard for evaluation 
+- each fold/group has a turn to be held out of training 
+"""
+
+# cross validation
+def cross_validation_split(dataset, n_folds):
+    dataset_split = list()
+    dataset_copy = list(dataset)
+    fold_size = int(len(dataset) / n_folds)
+    for _ in range(n_folds):
+        fold = list()
+        while len(fold) < fold_size:
+            index = randrange(len(dataset_copy))
+            fold.append(dataset_copy.pop(index))
+            dataset_split.append(fold)
+        return dataset_split 
+
+def evaluate_algorithm_cross_validation(dataset, algorithm, n_folds, *args):
+    folds = cross_validation_split(dataset, n_folds)
+    scores = list()
+    for fold in folds:
+        train_set = list(folds)
+        train_set.remove(fold)
+        # the list of folds is flattened into a list of rows 
+        # to match the algorithm's expectation of a training dataset
+        train_set = sum(train_set, [])
+        test_set = list()
+        for row in fold:
+            row_copy = list(row)
+            test_set.append(row_copy)
+            row_copy[-1] = None
+        predicted = algorithm(train_set, test_set, *args)
+        actual = [row[-1] for row in fold]
+        accuracy = accuracy_metric(actual, predicted)
+        scores.append(accuracy)
+    return scores 
+
+# example 
+seed(1)
+filename = 'data.csv'
+dataset = load_csv(filename)
+for i in range(len(dataset[0])):
+    str_column_to_float(dataset, i)
+n_folds = 5
+scores = evaluate_algorithm(dataset, zero_rule_classification, n_folds)
+print('Scores: %s' % scores)
+print('Mean Accuracy: %.3f%%' % (sum(scores)/len(scores))) 
+# Scores: [62.091503267973856, 64.70588235294117, 64.70588235294117, 64.70588235294117,
+# 69.28104575163398]
+# Mean Accuracy: 65.098%
