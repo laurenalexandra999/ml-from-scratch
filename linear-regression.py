@@ -51,3 +51,24 @@ mean_x, mean_y = mean(x), mean(y)
 covar = covariance(x, mean_x, y, mean_y)
 print('Covariance: %.3f' % (covar))
 # Covariance: 8.000
+
+"""
+step 3: estimate coefficients. 
+
+- b1 = covariance(x, y) / variance(x)
+- b0 = mean(y) - (b1 * mean(x))
+"""
+
+def coefficients(dataset):
+    x = [row[0] for row in dataset]
+    y = [row[1] for row in dataset]
+    x_mean, y_mean = mean(x), mean(y)
+    b1 = covariance(x, x_mean, y, y_mean) / variance(x, x_mean)
+    b0 = y_mean - b1 * x_mean 
+    return [b0, b1]
+
+# example 
+dataset = [[1, 1], [2, 3], [4, 3], [3, 2], [5, 5]]
+b0, b1 = coefficients(dataset)
+print('Coefficients: B0=%.3f, B1=%.3f' % (b0, b1))
+# Coefficients: B0=0.400, B1=0.800 
