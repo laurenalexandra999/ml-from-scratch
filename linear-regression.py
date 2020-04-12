@@ -72,3 +72,48 @@ dataset = [[1, 1], [2, 3], [4, 3], [3, 2], [5, 5]]
 b0, b1 = coefficients(dataset)
 print('Coefficients: B0=%.3f, B1=%.3f' % (b0, b1))
 # Coefficients: B0=0.400, B1=0.800 
+
+"""
+step 4: make predictions
+
+- y = b0 + b1 * x
+- hat denotes an estimator or estimated value. (^)
+"""
+from math import sqrt 
+
+# calculate root mean squared error
+def rmse_metric(actual, predicted):
+    sum_error = 0.0
+    for i in range(len(actual)):
+        prediction_error = predicted[i] - actual[i]
+        sum_error += (prediction_error ** 2)
+    mean_error = sum_error / float(len(actual))
+    return sqrt(mean_error) 
+
+# evaluate regression algorithm on training data
+def evaluate_algorithm(dataset, algorithm):
+    test_set = list()
+    for row in dataset:
+        row_copy = list(row)
+        row_copy[-1] = None 
+        test_set.append(row_copy)
+    predicted = algorithm(dataset, test_set)
+    print(predicted)
+    actual = [row[-1] for row in dataset]
+    rmse = rmse_metric(actual, predicted)
+    return rmse 
+
+def simple_linear_regression(train, test):
+    predictions = list()
+    b0, b1 = coefficients(train)
+    for row in test:
+        yhat = b0 + b1 * row[0]
+        predictions.append(yhat)
+    return predictions 
+
+# example 
+dataset = [[1, 1], [2, 3], [4, 3], [3, 2], [5, 5]]
+rmse = evaluate_algorithm(dataset, simple_linear_regression)
+print('RMSE: %.3f' % (rmse))
+# [1.1999999999999995, 1.9999999999999996, 3.5999999999999996, 2.8, 4.3999999999999995]
+# RMSE: 0.693
