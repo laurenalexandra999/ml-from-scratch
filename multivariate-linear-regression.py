@@ -27,3 +27,32 @@ stochastic gradient descent
   - error is the model prediction error attributed to the coefficient
   - (x) is the input 
 """
+
+"""
+predict with coefficients
+
+- the first coefficient is the intercept. this is the bias or b0. 
+- y = b0 + b1 * x 
+"""
+
+def predict(row, coefficients):
+    # hat - estimated value
+    yhat = coefficients[0]
+    for i in range(len(row) - 1):
+        yhat += coefficients[i + 1] * row[i]
+    return yhat 
+
+# example
+dataset  = [[1, 1], [2, 3], [4, 3], [3, 2], [5, 5]]
+coef = [0.4, 0.8]
+for row in dataset:
+    # y = 0.4 + 0.8 * x
+    yhat = predict(row, coef)
+    print("Expected=%.3f, Predicted=%.3f" % (row[-1], yhat))
+"""
+Expected=1.000, Predicted=1.200
+Expected=3.000, Predicted=2.000
+Expected=3.000, Predicted=3.600
+Expected=2.000, Predicted=2.800
+Expected=5.000, Predicted=4.400
+"""
