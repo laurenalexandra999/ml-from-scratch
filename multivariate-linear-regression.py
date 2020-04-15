@@ -56,3 +56,32 @@ Expected=3.000, Predicted=3.600
 Expected=2.000, Predicted=2.800
 Expected=5.000, Predicted=4.400
 """
+
+"""
+estimate linear regression coefficents using stochastic gradient descent
+
+- stochastic gradient descent requires these parameters:
+  - learning rate: limits the amount a coefficient is corrected
+    each time the coefficient is updated
+  - epochs: the count of times running through the training data
+    while updating the coefficients
+"""
+def coefficents_sgd(train, l_rate, n_epoch):
+    coef = [0.0 for i in range(len(train[0]))]
+    # iterate over each epoch
+    for epoch in range(n_epoch):
+        sum_error = 0
+        # iterate over each row in training data for a given epoch
+        for row in train:
+            yhat = predict(row, coef)
+            # model error = prediction - expected
+            error = yhat - row[-1]
+            sum_error += error**2
+            # bias coefficient: b0(t + 1) = b0(t) - learning rate * error(t)
+            coef[0] = coef[0] - l_rate * error
+            # iterate over each coefficient and update it for each row in a given epoch
+            for i in range(len(row) - 1):
+                # b1(t + 1) = b1(t) - learning rate * error(t) * x1(t)
+                coef[i + 1] = coef[i + 1] - l_rate * error * row[i]
+        print('>epoch=%d, lrate=%.3f, error=%.3f' % (epoch, l_rate, sum_error))
+    return coef 
