@@ -76,6 +76,7 @@ def coefficents_sgd(train, l_rate, n_epoch):
             yhat = predict(row, coef)
             # model error = prediction - expected
             error = yhat - row[-1]
+            # sum of the squared error (positive value)
             sum_error += error**2
             # bias coefficient: b0(t + 1) = b0(t) - learning rate * error(t)
             coef[0] = coef[0] - l_rate * error
@@ -85,3 +86,18 @@ def coefficents_sgd(train, l_rate, n_epoch):
                 coef[i + 1] = coef[i + 1] - l_rate * error * row[i]
         print('>epoch=%d, lrate=%.3f, error=%.3f' % (epoch, l_rate, sum_error))
     return coef 
+
+# example 
+dataset = [[1, 1], [2, 3], [4, 3], [3, 2], [5, 5]]
+l_rate = 0.001
+n_epoch = 50
+coef = coefficents_sgd(dataset, l_rate, n_epoch)
+"""
+...
+>epoch=45, lrate=0.001, error=2.650
+>epoch=46, lrate=0.001, error=2.627
+>epoch=47, lrate=0.001, error=2.607
+>epoch=48, lrate=0.001, error=2.589
+>epoch=49, lrate=0.001, error=2.573
+[0.22998234937311363, 0.8017220304137576]
+"""
