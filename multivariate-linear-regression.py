@@ -101,3 +101,20 @@ coef = coefficents_sgd(dataset, l_rate, n_epoch)
 >epoch=49, lrate=0.001, error=2.573
 [0.22998234937311363, 0.8017220304137576]
 """
+
+"""
+example linear regression on csv
+"""
+seed(1)
+filename = 'data.csv'
+dataset = load_csv(filename)
+for i in range(len(dataset[0])):
+  str_column_to_float(dataset, i)
+minmax = dataset_minmax(dataset)
+normalize_dataset(dataset, minmax)
+n_folds = 5
+l_rate = 0.01
+n_epoch = 50
+scores = evalute_algorithm(dataset, linear_regression_sgd, n_folds, l_rate, n_epoch)
+print('Scores: %s' % scores)
+print('Mean RMSE: %.3f' % (sum(scores)/float(len(scores))))
