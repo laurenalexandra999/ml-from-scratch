@@ -72,3 +72,64 @@ Expected=1.000, Predicted=0.972 [1]
 Expected=1.000, Predicted=0.999 [1]
 Expected=1.000, Predicted=0.905 [1]
 """
+
+"""
+estimate coefficients
+
+- learning rate: used to limit the amount each coefficient is corrected every time it is updated
+
+- epochs: the number of times to run through the training data while updating the coefficients
+"""
+
+# estimate logistic regression coefficients with stochastic gradient descent
+def coefficients_sgd(train, l_rate, n_epoch):
+    coef = [0.0 for i in range(len(train[0]))]
+    # iterate over each epoch 
+    for epoch in range(n_epoch):
+        sum_error = 0
+        # iterate over each row in training data for an epoch 
+        for row in train:
+            # predict
+            yhat = predict(row, coef)
+            # difference between expected and predicted value 
+            error = row[-1] - yhat
+            # sum of the squared error, a positive value 
+            sum_error += error**2
+            # the intercept coefficient is not responsible for an input value
+            # b0(t + 1) = b0(t) + learning rate × (y(t) − yhat(t)) × yhat(t) × (1 − yhat(t))
+            coef[0] = coef[0] + l_rate * error * yhat * (1.0 - yhat)
+            # iterate over each coefficient and update it for a row in an epoch
+            # there is one coefficient to weight each input value (row[i])
+            for i in range(len(row) - 1):
+                # b1(t + 1) = b1(t) + learning rate × (y(t) − yhat(t)) × yhat(t) × (1 − yhat(t)) × x1(t)
+                coef[i + 1] = coef[i + 1] + l_rate * error * yhat * (1.0 - yhat) * row[i]
+        print('>epoch=%d, lrate=%.3f, error=%.3f' % (epoch, l_rate, sum_error))
+    return coef 
+ 
+dataset = [[2.7810836,2.550537003,0],
+[1.465489372,2.362125076,0],
+[3.396561688,4.400293529,0],
+[1.38807019,1.850220317,0],
+[3.06407232,3.005305973,0],
+[7.627531214,2.759262235,1],
+[5.332441248,2.088626775,1],
+[6.922596716,1.77106367,1],
+[8.675418651,-0.242068655,1],
+[7.673756466,3.508563011,1]]
+
+# learning rate 
+l_rate = 0.3
+# train the model for 100 epochs or exposures of the coefficients
+n_epoch = 100
+
+# calculate coefficients
+coef = coefficients_sgd(dataset, l_rate, n_epoch)
+"""
+...
+>epoch=97, lrate=0.300, error=0.023
+>epoch=98, lrate=0.300, error=0.023
+>epoch=99, lrate=0.300, error=0.022
+"""
+# the final set of coefficients 
+print(coef)
+# [-0.8596443546618897, 1.5223825112460005, -2.218700210565016]
