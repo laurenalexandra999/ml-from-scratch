@@ -125,3 +125,35 @@ weights = train_weights(dataset, l_rate, n_epoch)
 
 print(weights)
 # [-0.1, 0.20653640140000007, -0.23418117710000003]
+
+# Perceptron algorithm 
+def perceptron(train, test, l_rate, n_epoch):
+    predictions = list()
+    weights = train_weights(train, l_rate, n_epoch)
+    for row in test:
+        prediction = predict(row, weights)
+        predictions.append(prediction)
+return(predictions)
+
+# example 
+seed(1)
+filename = 'data.csv'
+dataset = load_csv(filename)
+for i in range(len(dataset[0])-1):
+    str_column_to_float(dataset, i)
+    # convert string class to integers (0 or 1)
+    str_column_to_int(dataset, len(dataset[0])-1)
+# cross-validate with 3 folds
+n_folds = 3   
+# learning rate       
+l_rate = 0.01      
+# 500 exposures 
+n_epoch = 500       
+# evaluate Perceptron algorithm
+scores = evaluate_algorithm(dataset, perceptron, n_folds, l_rate, n_epoch)
+print('Scores: %s' % scores)
+print('Mean Accuracy: %.3f%%' % (sum(scores)/float(len(scores))))
+"""
+Scores: [76.81159420289855, 69.56521739130434, 72.46376811594203]
+Mean Accuracy: 72.947%
+"""
