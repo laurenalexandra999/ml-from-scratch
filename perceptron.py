@@ -13,3 +13,18 @@ the Perceptron algorithm
 - step transfer function
     prediction = 1.0 IF activation (greater than or equal to) 0.0 ELSE 0.0
 """
+
+"""
+stochastic gradient descent
+
+- the Perceptron uses SGD to update weights/coefficients
+
+- weights are updated each iteration:
+
+    w = w + learning_rate * (expected - predicted) * x
+
+    - w is the weight being optimized 
+    - learning rate you need to configure, e.g. 0.01
+    - prediction error for the model is (expected - predicted) and is attributed to the weight
+    - x is input
+"""
