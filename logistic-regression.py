@@ -133,3 +133,41 @@ coef = coefficients_sgd(dataset, l_rate, n_epoch)
 # the final set of coefficients 
 print(coef)
 # [-0.8596443546618897, 1.5223825112460005, -2.218700210565016]
+
+# train logistic regression model with stochastic gradient descent 
+def logistic_regression(train, test, l_rate, n_epoch):
+    predictions = list()
+    coef = coefficients_sgd(train, l_rate, n_epoch)
+    for row in test:
+        yhat = predict(row, coef)
+        yhat = round(yhat)
+        predictions.append(yhat)
+    return(predictions)
+
+# example 
+from random import seed
+from random import randrange
+from csv import reader
+from math import exp
+
+seed(1)
+# load and prepare data 
+filename = 'data.csv'
+dataset = load_csv(filename)
+for i in range(len(dataset[0])):
+    str_column_to_float(dataset, i)
+# normalize data 
+minmax = dataset_minmax(dataset)
+normalize_dataset(dataset, minmax)
+# evaluate the algorithm
+n_folds = 5     # cross-validate with 5 folds
+l_rate = 0.1    # learning rate 
+n_epoch = 100   # 100 epochs/exposures to coefficients 
+scores = evaluate_algorithm(dataset, logistic_regression, n_folds, l_rate, n_epoch)
+print('Scores: %s' % scores)
+print('Mean Accuracy: %.3f%%' % (sum(scores)/float(len(scores))))
+"""
+Scores: [73.8562091503268, 78.43137254901961, 81.69934640522875, 75.81699346405229,
+75.81699346405229]
+Mean Accuracy: 77.124%
+"""
