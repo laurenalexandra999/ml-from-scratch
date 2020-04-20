@@ -70,3 +70,58 @@ Expected=1, Predicted=1
 Expected=1, Predicted=1
 Expected=1, Predicted=1
 """
+
+"""
+train network weights
+
+- estimate weights with stochastic gradient descent
+    - learning rate: used to limit the amount each weight is corrected on each update
+    - epochs/exposures: the number of times to run through the training data while updating the weights
+"""
+def train_weights(train, l_rate, n_epoch):
+    weights = [0.0 for i in range(len(train[0]))]
+    # iterate over each epoch 
+    for epoch in range(n_epoch):
+        sum_error = 0.0
+        # iterate over each row in training data for an epoch
+        for row in train:
+            prediction = predict(row, weights)
+            # expected - predicted 
+            error = row[-1] - prediction
+            sum_error += error**2
+            # bias(t + 1) = bias(t) + learning_rate * (expected(t) - predicted(t))
+            weights[0] = weights[0] + l_rate * error 
+            # iterate over each weight and update it for a row in an epoch
+            for i in range(len(row) - 1):
+                # w(t + 1) = w(t) + learning_rate * (expected(t) - predicted(t) * x(t))
+                weights[i + 1] = weights[i + 1] + l_rate * error * row[i]
+        print('>epoch=%d, lrate=%.3f, error=%.3f' % (epoch, l_rate, sum_error))
+    return weights 
+
+# example
+dataset = [[2.7810836,2.550537003,0],
+[1.465489372,2.362125076,0],
+[3.396561688,4.400293529,0],
+[1.38807019,1.850220317,0],
+[3.06407232,3.005305973,0],
+[7.627531214,2.759262235,1],
+[5.332441248,2.088626775,1],
+[6.922596716,1.77106367,1],
+[8.675418651,-0.242068655,1],
+[7.673756466,3.508563011,1]]
+# learning rate
+l_rate = 0.1
+# epochs/exposures 
+n_epoch = 5
+
+weights = train_weights(dataset, l_rate, n_epoch)
+"""
+>epoch=0, lrate=0.100, error=2.000
+>epoch=1, lrate=0.100, error=1.000
+>epoch=2, lrate=0.100, error=0.000
+>epoch=3, lrate=0.100, error=0.000
+>epoch=4, lrate=0.100, error=0.000
+"""
+
+print(weights)
+# [-0.1, 0.20653640140000007, -0.23418117710000003]
