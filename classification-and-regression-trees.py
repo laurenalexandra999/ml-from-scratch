@@ -76,3 +76,13 @@ print(gini_index([[[1, 1], [1, 0]], [[1, 1], [1, 0]]], [0, 1]))
 print(gini_index([[[1, 0], [1, 0]], [[1, 1], [1, 1]]], [0, 1]))
 # 0.5
 # 0.0
+
+# splitting a dataset into two lists of rows given the index of an attribute
+def test_split(index, value, dataset):
+    left, right = list(), list()
+    for row in dataset:
+        if row[index] < value:
+            left.append(row)
+        else:
+            right.append(row)
+    return left, right
