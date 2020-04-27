@@ -86,3 +86,65 @@ def test_split(index, value, dataset):
         else:
             right.append(row)
     return left, right
+
+# evaluating all splits: check every value on each attribute as
+# a candidate split and evaluate the split cost 
+def get_split(dataset):
+    class_values = list(set(row[-1] for row in dataset))
+    b_index, b_value, b_score, b_groups = 999, 999, 999, None
+    # iterate over each attribute
+    for index in range(len(dataset[0])-1):
+        # iterate over each value for an attribute 
+        for row in dataset:
+            # split dataset into two lists of rows 
+            groups = test_split(index, row[index], dataset)
+            # use cost function to divide data into two groups of rows (a split)
+            gini = gini_index(groups, class_values)
+            print('X%d < %.3f Gini=%.3f' % ((index+1), row[index], gini))
+        if gini < b_score:
+            b_index, b_value, b_score, b_groups = index, row[index], gini, groups
+    # the best split represented as a node in decision tree
+    # index of attribute
+    # value of attribute by which to split
+    # two groups of data split by the splitting point 
+    return {'index':b_index, 'value':b_value, 'groups':b_groups}
+
+# Example: Find the best split
+dataset = [[2.771244718,1.784783929,0],
+[1.728571309,1.169761413,0],
+[3.678319846,2.81281357,0],
+[3.961043357,2.61995032,0],
+[2.999208922,2.209014212,0],
+[7.497545867,3.162953546,1],
+[9.00220326,3.339047188,1],
+[7.444542326,0.476683375,1],
+[10.12493903,3.234550982,1],
+[6.642287351,3.319983761,1]]
+
+split = get_split(dataset)
+
+"""
+X1 < 2.771 Gini=0.444
+X1 < 1.729 Gini=0.500
+X1 < 3.678 Gini=0.286
+X1 < 3.961 Gini=0.167
+X1 < 2.999 Gini=0.375
+X1 < 7.498 Gini=0.286
+X1 < 9.002 Gini=0.375
+X1 < 7.445 Gini=0.167
+X1 < 10.125 Gini=0.444
+X1 < 6.642 Gini=0.000   # perfect split 
+X2 < 1.785 Gini=0.500
+X2 < 1.170 Gini=0.444
+X2 < 2.813 Gini=0.320
+X2 < 2.620 Gini=0.417
+X2 < 2.209 Gini=0.476
+X2 < 3.163 Gini=0.167
+X2 < 3.339 Gini=0.444
+X2 < 0.477 Gini=0.500
+X2 < 3.235 Gini=0.286
+X2 < 3.320 Gini=0.375
+"""
+
+print('Split: [X%d < %.3f]' % ((split['index']+1), split['value']))
+# Split: [X1 < 6.642]
